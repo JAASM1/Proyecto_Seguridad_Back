@@ -11,11 +11,11 @@ La idea es tener, un espacio donde el organizador pueda crear un evento con deta
 Los invitados, por su parte, confirmarían su asistencia de forma rápida y ordenada, sin depender de los chats masivos o respuestas perdidas entre las notificaciones
 
 ## **Integrantes**
-- Aguilar Chuc Noely Monserrat
-- Gonzalez Romero Joshua
-- Martinez Lopez Irving
-- Laines Cupul Evelin Yasmin
-- Sánchez Martínez Jesús Alexander Abad
+- Aguilar Chuc Noely Monserrat - 22393209@utcancun.edu.mx - **Git**: Acmonse11
+- Gonzalez Romero Joshua - 22393217@utcancun.edu.mx - **Git**: secondglitter
+- Martinez Lopez Irving - 22393236@utcancun.edu.mx - **Git**: XxIrvingositoxX
+- Laines Cupul Evelin Yasmin - 22394139@utcancun.edu.mx - **Git**: Eveyas
+- Sánchez Martínez Jesús Alexander Abad - 22393250@utcancun.edu.mx - **Git**: JAASM1
 
 ## **Librerias**
 - BCrypt.Net-Next
