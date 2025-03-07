@@ -1,7 +1,16 @@
+using back_sistema_de_eventos.Context;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddCors(option =>
 {
@@ -11,6 +20,8 @@ builder.Services.AddCors(option =>
         .AllowAnyMethod()
         .AllowAnyHeader());
 });
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
