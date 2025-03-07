@@ -1,16 +1,13 @@
 using back_sistema_de_eventos.Context;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
-
 // Add services to the container.
 builder.Services.AddControllers();
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddCors(option =>
 {
