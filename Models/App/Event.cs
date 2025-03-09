@@ -6,9 +6,8 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }
-        public string Date { get; set; }
-        public string Hour { get; set; }
-        public bool Status { get; set; }
+        public DateTime EventDateTime { get; set; }
+        public bool IsActive { get; set; } = true;
         public int IdOrganizer { get; set; }
         public User Organizer { get; set; }
 

@@ -13,14 +13,15 @@ namespace back_sistema_de_eventos.Context
         //Event
         public DbSet<Event> Events { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
+        public DbSet<GuestRegistration> GuestRegistrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Event>()
-                .HasOne(e=>e.Organizer)
-                .WithMany(u => u.OrganaizedEvents)
+                .HasOne(e => e.Organizer)
+                .WithMany(u => u.OrganizedEvents)
                 .HasForeignKey(e => e.IdOrganizer)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -31,18 +32,22 @@ namespace back_sistema_de_eventos.Context
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Invitation>()
-                .HasOne(i => i.User)
+                .HasOne(i => i.Guest)
                 .WithMany(u => u.Invitations)
-                .HasForeignKey(i => i.IdUser)
+                .HasForeignKey(i => i.IdGuest)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+            modelBuilder.Entity<GuestRegistration>()
+                .HasOne(g => g.Invitation)
+                .WithOne(i => i.GuestRegistration)
+                .HasForeignKey<GuestRegistration>(g => g.IdInvitation)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Invitation>()
-                .HasIndex(i => new { i.IdEvent, i.IdUser })
-                .IsUnique();
+            modelBuilder.Entity<GuestRegistration>()
+                .HasOne(g => g.User)
+                .WithMany(u => u.GuestRegistrations)
+                .HasForeignKey(g => g.IdUser)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }
