@@ -1,10 +1,15 @@
 using back_sistema_de_eventos.Context;
+using back_sistema_de_eventos.Services.IService.IEvents;
+using back_sistema_de_eventos.Services.Service.EventS;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+//Aqui se agregan los servicios
+builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
