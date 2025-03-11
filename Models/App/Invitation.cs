@@ -15,7 +15,7 @@
         public int? IdGuest { get; set; }
         public User Guest { get; set; }
         public InvitationStatus Status { get; set; } = InvitationStatus.Pending;
-        public string Token { get; set; } = Guid.NewGuid().ToString();
+        public string Token { get; set; } = string.Empty;
         public DateTime InvitedAt { get; set; } = DateTime.UtcNow;
         public GuestRegistration GuestRegistration { get; set; }
     }
