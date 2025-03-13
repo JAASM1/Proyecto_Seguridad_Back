@@ -20,10 +20,15 @@ namespace back_sistema_de_eventos.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Event>()
-                .HasOne(e => e.Organizer)
-                .WithMany(u => u.OrganizedEvents)
-                .HasForeignKey(e => e.IdOrganizer)
-                .OnDelete(DeleteBehavior.Restrict);
+                 .HasOne(e => e.Organizer)
+                 .WithMany(u => u.OrganizedEvents)
+                 .HasForeignKey(e => e.IdOrganizer)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+            //índice para el token del evento
+            modelBuilder.Entity<Event>()
+                .HasIndex(e => e.Token)
+                .IsUnique();
 
             modelBuilder.Entity<Invitation>()
                 .HasOne(i => i.Event)
