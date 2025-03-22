@@ -4219,23 +4219,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alexd\\.nuget\\packages\\": {},
+    "C:\\Users\\Monse\\.nuget\\packages\\": {},
+    "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj",
+      "projectUniqueName": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
       "projectName": "back_sistema_de_eventos",
-      "projectPath": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj",
-      "packagesPath": "C:\\Users\\alexd\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\obj\\",
+      "projectPath": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+      "packagesPath": "C:\\Users\\Monse\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\alexd\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Monse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4244,6 +4247,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\DevExpress 24.1\\Components\\System\\Components\\Packages": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4260,9 +4265,8 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.200"
+        "auditMode": "all"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -4306,6 +4310,28 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.14, 8.0.14]"
+          },
+          {
+            "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+            "version": "[9.0.104, 9.0.104]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.14, 8.0.14]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.14, 8.0.14]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.14, 8.0.14]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -4314,8 +4340,110 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.104/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Azure.Identity\" 1.7.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-5mfx-4wcx-rv27",
+      "libraryId": "Azure.Identity",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Azure.Identity\" 1.7.0 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
+      "libraryId": "Azure.Identity",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Azure.Identity\" 1.7.0 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-wvxc-855f-jvrv",
+      "libraryId": "Azure.Identity",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Microsoft.Data.SqlClient\" 5.1.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7",
+      "libraryId": "Microsoft.Data.SqlClient",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Microsoft.Extensions.Caching.Memory\" 8.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-qj66-m88j-hmgj",
+      "libraryId": "Microsoft.Extensions.Caching.Memory",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"Microsoft.IdentityModel.JsonWebTokens\" 7.0.3 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "Microsoft.IdentityModel.JsonWebTokens",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"System.Formats.Asn1\" 5.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-447r-wph3-92pm",
+      "libraryId": "System.Formats.Asn1",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"System.IdentityModel.Tokens.Jwt\" 7.0.3 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"System.Text.Json\" 8.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-8g4q-xg66-9fp4",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"System.Text.Json\" 8.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }
