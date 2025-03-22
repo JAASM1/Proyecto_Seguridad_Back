@@ -1,25 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {}
+    "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {
+    "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+        "projectUniqueName": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj",
         "projectName": "back_sistema_de_eventos",
-        "projectPath": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
-        "packagesPath": "C:\\Users\\Monse\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Monse\\Desktop\\back\\Proyecto_Seguridad_Back\\obj\\",
+        "projectPath": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj",
+        "packagesPath": "C:\\Users\\alexd\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages",
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Monse\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.1.config",
+          "C:\\Users\\alexd\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -28,8 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\DevExpress 24.1\\Components\\System\\Components\\Packages": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,8 +42,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
-        }
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -99,28 +96,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.Net.Sdk.Compilers.Toolset",
-              "version": "[9.0.104, 9.0.104]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.14, 8.0.14]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -129,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.104/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
