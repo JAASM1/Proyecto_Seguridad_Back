@@ -7,7 +7,7 @@ namespace back_sistema_de_eventos.Services.IService.IUser
     {
         public List<User> GetUser();
         public Task<User> GetUserById(int id);
-        public Task<bool> CreateUser(UserCreateDTO request);
+        //public Task<bool> CreateUser(UserCreateDTO request);
 
         public Task<bool> EditUser(int Id, UserEditDTO request);
         public Task<bool> DeleteUser(int id);

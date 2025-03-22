@@ -31,26 +31,26 @@ namespace back_sistema_de_eventos.Services
         }
 
 
-        //Crear Usuario
-        public async Task<bool> CreateUser(UserCreateDTO request)
-        {
-            try
-            {
-                var user = new User
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                };
+        ////Crear Usuario
+        //public async Task<bool> CreateUser(UserCreateDTO request)
+        //{
+        //    try
+        //    {
+        //        var user = new User
+        //        {
+        //            Name = request.Name,
+        //            Email = request.Email,
+        //            Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+        //        };
 
-                _DbContext.Users.Add(user);
-                return await _DbContext.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al crear el usuario: " + ex.Message, ex);
-            }
-        }
+        //        _DbContext.Users.Add(user);
+        //        return await _DbContext.SaveChangesAsync() > 0;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al crear el usuario: " + ex.Message, ex);
+        //    }
+        //}
 
         // Editar usuario
         public async Task<bool> EditUser(int Id, UserEditDTO request)

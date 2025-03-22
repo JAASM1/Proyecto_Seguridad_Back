@@ -34,28 +34,28 @@ namespace back_sistema_de_eventos.Controllers.Auth
         }
 
         //Crear el usuario
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new { message = "Los datos del usuario son invalidos", errors = ModelState.Values.SelectMany(v => v.Errors) });
-            }
-            try
-            {
-                bool result = await _userService.CreateUser(request);
+        //[HttpPost("Create")]
+        //public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(new { message = "Los datos del usuario son invalidos", errors = ModelState.Values.SelectMany(v => v.Errors) });
+        //    }
+        //    try
+        //    {
+        //        bool result = await _userService.CreateUser(request);
 
-                if (result)
-                {
-                    return CreatedAtAction(nameof(GetUsers), request);
-                }
-                return StatusCode(500, new { message = "Hubo un problema al crear el usuario" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Error interno en el servidor", error = ex.Message });
-            }
-        }
+        //        if (result)
+        //        {
+        //            return CreatedAtAction(nameof(GetUsers), request);
+        //        }
+        //        return StatusCode(500, new { message = "Hubo un problema al crear el usuario" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "Error interno en el servidor", error = ex.Message });
+        //    }
+        //}
 
 
         //Obtener usuario por ID
