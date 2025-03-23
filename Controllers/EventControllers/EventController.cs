@@ -1,8 +1,10 @@
-﻿using back_sistema_de_eventos.Models.App;
+﻿using back_sistema_de_eventos.Context;
+using back_sistema_de_eventos.Models.App;
 using back_sistema_de_eventos.Models.DTOs;
 using back_sistema_de_eventos.Services.IService.IEvents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace back_sistema_de_eventos.Controllers.EventControllers
 {
@@ -11,9 +13,12 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
-        public EventController(IEventService eventService)
+        private readonly ApplicationDBContext _context;
+        public EventController(IEventService eventService, ApplicationDBContext context)
         {
             _eventService = eventService;
+            _context = context;
+
         }
 
         // GET: EventController/GetEventByUser/5
@@ -73,6 +78,28 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         {
             var result = await _eventService.DeleteEvent(idEvent);
             return Ok(result);
+        }
+
+
+        // GET: EventController/GetEventGuests
+        [HttpGet("GetEventGuests/{eventId}")]
+        public async Task<ActionResult> GetEventGuests(int eventId)
+        {
+            var guests = await _context.Invitations
+                .Include(i => i.Guest)
+                .Include(i => i.GuestRegistration)
+                .Where(i => i.IdEvent == eventId)
+                .Select(i => new
+                {
+                    i.Guest.Id,
+                    i.Guest.Name,
+                    i.Guest.Email,
+                    Status = i.GuestRegistration.Status.ToString(),
+                    InvitationId = i.Id
+                })
+                .ToListAsync();
+
+            return Ok(guests);
         }
     }
 
