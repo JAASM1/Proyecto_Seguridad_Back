@@ -58,6 +58,8 @@ public class AuthController : Controller
         return Ok(new { token, user = new { id = newUser.Id, name = newUser.Name, email = newUser.Email } });
     }
 
+
+
 }
 
 
