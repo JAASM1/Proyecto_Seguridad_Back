@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string? Token { get; set; }
 
         public ICollection<Event> OrganizedEvents { get; set; } = new List<Event>();
         public ICollection<Invitation> Invitations { get; set; } = new List<Invitation>();
