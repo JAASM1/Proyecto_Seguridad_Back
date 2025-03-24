@@ -47,6 +47,23 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
+        public async Task<Event> GetEventByToken(string Token)
+        {
+            try
+            {
+                var eventFound = await _context.Events.Where(x => x.Token == Token).FirstOrDefaultAsync();
+                if (eventFound == null)
+                {
+                    throw new Exception("Event not found");
+                }
+                return eventFound;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Event> CreateEvent(Event eventToCreate)
         {
             try
