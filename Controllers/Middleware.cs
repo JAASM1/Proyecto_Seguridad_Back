@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Text.RegularExpressions;  // Importante para Regex
+using System.Text.RegularExpressions;  
 
 namespace back_sistema_de_eventos.Controllers
 {
@@ -13,9 +13,9 @@ namespace back_sistema_de_eventos.Controllers
         // Rutas dinámicas protegidas (con Regex)
         private readonly List<string> _protectedRoutePatterns = new List<string>
         {
-            @"^/api/Event/GetEventsByUser/\d+$",          // ID numérico
-            @"^/api/Event/GetEventsById/\d+$",            // ID numérico
-            @"^/api/Event/GetEventsByToken/[a-zA-Z0-9]+$" // Token alfanumérico
+            @"^/api/Event/GetEventsByUser/\d+$",          
+            @"^/api/Event/GetEventsById/\d+$",            
+            @"^/api/Event/GetEventsByToken/[a-zA-Z0-9]+$" 
         };
 
         public Middleware(RequestDelegate next, IConfiguration config)
@@ -40,7 +40,7 @@ namespace back_sistema_de_eventos.Controllers
                 {
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync("Token is missing");
-                    return;  // 🔥 IMPORTANTE: Detiene la ejecución
+                    return;  
                 }
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -66,13 +66,13 @@ namespace back_sistema_de_eventos.Controllers
                 {
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync("Token expired");
-                    return;  // 🔥 Detiene la ejecución
+                    return;  
                 }
                 catch (Exception)
                 {
                     context.Response.StatusCode = 401;
                     await context.Response.WriteAsync("Invalid Token");
-                    return;  // 🔥 Detiene la ejecución
+                    return; 
                 }
             }
             else
