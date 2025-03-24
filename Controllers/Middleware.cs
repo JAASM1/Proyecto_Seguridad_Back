@@ -1,85 +1,56 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using System.Text.RegularExpressions;  
+﻿using System.Net;
+using System.Text.Json;
 
-namespace back_sistema_de_eventos.Controllers
+namespace back_sistema_de_eventos.Middleware
 {
-    public class Middleware
+    public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IConfiguration _config;
+        private readonly ILogger<ExceptionMiddleware> _logger;
+        private readonly IHostEnvironment _env;
 
-        // Rutas dinámicas protegidas (con Regex)
-        private readonly List<string> _protectedRoutePatterns = new List<string>
-        {
-            @"^/api/Event/GetEventsByUser/\d+$",          
-            @"^/api/Event/GetEventsById/\d+$",            
-            @"^/api/Event/GetEventsByToken/[a-zA-Z0-9]+$" 
-        };
-
-        public Middleware(RequestDelegate next, IConfiguration config)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
         {
             _next = next;
-            _config = config;
+            _logger = logger;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var path = context.Request.Path.Value?.ToLower();
-
-            // Verificar si la ruta coincide con un patrón dinámico
-            bool isProtected = _protectedRoutePatterns.Any(pattern =>
-                Regex.IsMatch(path, pattern));
-
-            if (isProtected)
+            try
             {
-                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-                if (string.IsNullOrEmpty(token))
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Token is missing");
-                    return;  
-                }
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
-
-                try
-                {
-                    tokenHandler.ValidateToken(token, new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = true,
-                        ValidIssuer = _config["Jwt:Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = _config["Jwt:Audience"],
-                        ClockSkew = TimeSpan.Zero
-                    }, out SecurityToken validatedToken);
-
-                    // Si el token es válido, continúa la ejecución
-                    await _next(context);
-                }
-                catch (SecurityTokenExpiredException)
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Token expired");
-                    return;  
-                }
-                catch (Exception)
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Invalid Token");
-                    return; 
-                }
-            }
-            else
-            {
-                // Si la ruta no está protegida, continúa sin verificar
                 await _next(context);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                var response = _env.IsDevelopment()
+                    ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
+                    : new ApiException(context.Response.StatusCode, "Error interno del servidor");
+
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                var json = JsonSerializer.Serialize(response, options);
+
+                await context.Response.WriteAsync(json);
+            }
+        }
+    }
+
+    public class ApiException
+    {
+        public int StatusCode { get; set; }
+        public string Message { get; set; }
+        public string Details { get; set; }
+
+        public ApiException(int statusCode, string message, string details = null)
+        {
+            StatusCode = statusCode;
+            Message = message;
+            Details = details;
         }
     }
 }

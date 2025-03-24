@@ -2,87 +2,156 @@
 using back_sistema_de_eventos.Models.App;
 using back_sistema_de_eventos.Models.DTOs;
 using back_sistema_de_eventos.Services.Service;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 
-
-[Route("api/auth")]
-[ApiController]
-public class AuthController : Controller
+namespace back_sistema_de_eventos.Controllers.Auth
 {
-    private readonly ApplicationDBContext _DbContext;
-    private readonly JwtService _jwtService;
-
-    public AuthController(ApplicationDBContext DbContext, JwtService jwtService)
+    [Route("api/auth")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
-        _DbContext = DbContext;
-        _jwtService = jwtService; 
-    }
+        private readonly ApplicationDBContext _dbContext;
+        private readonly JwtService _jwtService;
+        private readonly ILogger<AuthController> _logger;
+        private readonly IConfiguration _configuration;
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserDTO request)
-    {
-        var user = await _DbContext.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
-
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
-            return Unauthorized("Credenciales incorrectas");
-
-        var token = _jwtService.GenerateToken(user);
-        user.Token = token;
-        _DbContext.Users.Update(user);
-        await _DbContext.SaveChangesAsync();
-        return Ok(new { token, user });
-    }
-
-
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserDTO request)
-    {
-
-        var existingUser = await _DbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-        if (existingUser != null)
-            return BadRequest(new { message = "El correo ya está registrado" });
-
-        var newUser = new User
+        public AuthController(ApplicationDBContext dbContext, JwtService jwtService, ILogger<AuthController> logger, IConfiguration configuration)
         {
-            Name = request.Name,
-            Email = request.Email,
-            Password = BCrypt.Net.BCrypt.HashPassword(request.Password)
-        };
-
-        await _DbContext.Users.AddAsync(newUser);
-        await _DbContext.SaveChangesAsync();
-        return Ok(new {user = new { id = newUser.Id, name = newUser.Name, email = newUser.Email } });
-    }
-
-    [HttpPut("logout/{id}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO request)
-    {
-        var user = await _DbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-
-        if (user == null)
-            return NotFound(new { message = "Usuario no encontrado" });
-
-        // Actualizar los campos del usuario
-        user.Name = request.Name ?? user.Name;
-        user.Email = request.Email ?? user.Email;
-
-        if (!string.IsNullOrEmpty(request.Password))
-        {
-            user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            _dbContext = dbContext;
+            _jwtService = jwtService;
+            _logger = logger;
+            _configuration = configuration;
         }
 
-        // Remover el token
-        user.Token = null;
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Datos de inicio de sesión inválidos" });
+            }
 
-        _DbContext.Users.Update(user);
-        await _DbContext.SaveChangesAsync();
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
 
-        return Ok(new { message = "Usuario actualizado y token eliminado", user });
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            {
+                return Unauthorized(new { message = "Credenciales incorrectas" });
+            }
+
+            var accessToken = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken(user);
+
+            // Guardar refresh token en la base de datos
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(
+                double.Parse(_configuration["Jwt:RefreshTokenExpireDays"]));
+
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                accessToken,
+                refreshToken,
+                user = new { id = user.Id, name = user.Name, email = user.Email }
+            });
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Datos de registro inválidos", errors = ModelState });
+            }
+
+            var existingUser = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "El correo ya está registrado" });
+            }
+
+            var newUser = new User
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password)
+            };
+
+            await _dbContext.Users.AddAsync(newUser);
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"Error al guardar cambios: {ex.InnerException?.Message}");
+                throw;
+            }
+            return StatusCode(201, new
+            {
+                message = "Usuario registrado exitosamente",
+                user = new { id = newUser.Id, name = newUser.Name, email = newUser.Email }
+            });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenDTO tokenDto)
+        {
+            string accessToken = tokenDto.AccessToken;
+            string refreshToken = tokenDto.RefreshToken;
+
+            var principal = _jwtService.GetPrincipalFromToken(accessToken);
+            var userId = principal.FindFirst("Id")?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest(new { message = "Token inválido" });
+            }
+
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+
+            if (user == null ||
+                user.RefreshToken != refreshToken ||
+                user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Refresh token inválido o expirado" });
+            }
+
+            var newAccessToken = _jwtService.GenerateAccessToken(user);
+            var newRefreshToken = _jwtService.GenerateRefreshToken(user);
+
+            user.RefreshToken = newRefreshToken;
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
+        }
+
+        [HttpPost("logout/{idUser}")]
+        public async Task<IActionResult> Logout( int idUser )
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == idUser);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow;
+
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Sesión cerrada exitosamente" });
+        }
     }
-
-
 }

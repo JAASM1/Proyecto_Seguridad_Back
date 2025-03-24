@@ -1,15 +1,13 @@
 using back_sistema_de_eventos.Context;
 using back_sistema_de_eventos.Controllers;
+using back_sistema_de_eventos.Middleware;
 using back_sistema_de_eventos.Services;
 using back_sistema_de_eventos.Services.IService.IEvents;
 using back_sistema_de_eventos.Services.IService.IUser;
 using back_sistema_de_eventos.Services.Service;
 using back_sistema_de_eventos.Services.Service.EventS;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; // ?? Agrega esta línea para Swagger
-using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,24 +23,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Autenticación JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-    });
-
-builder.Services.AddAuthorization();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddScoped<JwtService>();
 
 // CORS
 builder.Services.AddCors(option =>
@@ -51,7 +33,8 @@ builder.Services.AddCors(option =>
         builder => builder
         .WithOrigins("http://localhost:5173")
         .AllowAnyMethod()
-        .AllowAnyHeader());
+        .AllowAnyHeader()
+        .AllowCredentials());
 });
 
 // ?? Swagger configuración con JWT
@@ -93,6 +76,8 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -100,9 +85,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowVueApp");
-app.UseMiddleware<Middleware>();  // Tu middleware personalizado
 app.UseHttpsRedirection();
-app.UseAuthentication();          // ? Agrega UseAuthentication antes de UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
