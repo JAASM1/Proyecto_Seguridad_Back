@@ -47,6 +47,23 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
+        public async Task<Event> GetEventByToken(string Token)
+        {
+            try
+            {
+                var eventFound = await _context.Events.Where(x => x.Token == Token).FirstOrDefaultAsync();
+                if (eventFound == null)
+                {
+                    throw new Exception("Event not found");
+                }
+                return eventFound;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Event> CreateEvent(Event eventToCreate)
         {
             try
@@ -56,12 +73,14 @@ namespace back_sistema_de_eventos.Services.Service.EventS
                 {
                     throw new Exception("Organized not found");
                 }
+                TimeZoneInfo gmt5Zone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                DateTime eventDateTimeInGmt5 = TimeZoneInfo.ConvertTimeFromUtc(eventToCreate.EventDateTime, gmt5Zone);
                 Event newEvent = new Event()
                 {
                     Name = eventToCreate.Name,
                     Description = eventToCreate.Description,
                     Location = eventToCreate.Location,
-                    EventDateTime = eventToCreate.EventDateTime,
+                    EventDateTime = eventDateTimeInGmt5,
                     IdOrganizer = eventToCreate.IdOrganizer,
                     Organizer = organizer
                 };
