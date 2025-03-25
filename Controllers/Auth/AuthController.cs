@@ -153,5 +153,25 @@ namespace back_sistema_de_eventos.Controllers.Auth
 
             return Ok(new { message = "Sesión cerrada exitosamente" });
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO request)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+
+            var token = _jwtService.GeneratePasswordResetToken(user);
+            var callbackUrl = Url.Action("ResetPassword", "Auth", new { token }, Request.Scheme);
+
+            // Enviar correo con el enlace de restablecimiento de contraseña
+            // Aquí se simula el envío de correo
+            _logger.LogInformation($"Enlace de restablecimiento de contraseña: {callbackUrl}");
+
+            return Ok(new { message = "Enlace de restablecimiento de contraseña enviado" });
+        }
     }
 }
