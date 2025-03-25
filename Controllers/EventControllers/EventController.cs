@@ -33,6 +33,14 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             return Ok(result);
         }
 
+        // GET: EventController/GetEventById/44f45hb7-g798-4de9-ccc7-75ca1a150342
+        [HttpGet("GetEventByToken/{Token}")]
+        public async Task<ActionResult> GetEventByToken(string Token)
+        {
+            var result = await _eventService.GetEventByToken(Token);
+            return Ok(result);
+        }
+
         // POST: EventController/Create
         [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] EventDTO eventDTO)
