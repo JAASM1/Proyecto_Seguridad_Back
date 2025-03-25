@@ -56,9 +56,7 @@ namespace back_sistema_de_eventos.Controllers.Auth
 
             return Ok(new
             {
-                accessToken,
                 refreshToken,
-                user = new { id = user.Id, name = user.Name, email = user.Email }
             });
         }
 

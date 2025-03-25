@@ -18,7 +18,6 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         }
 
         // GET: EventController/GetEventByUser/5
-        [Authorize]
         [HttpGet("GetEventsByUser/{idUser}")]
         public async Task<ActionResult> GetEventByUser(int idUser)
         {
@@ -27,7 +26,6 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         }
 
         // GET: EventController/GetEventById/5
-        [Authorize]
         [HttpGet("GetEventById/{idEvent}")]
         public async Task<ActionResult> GetEventById(int idEvent)
         {
