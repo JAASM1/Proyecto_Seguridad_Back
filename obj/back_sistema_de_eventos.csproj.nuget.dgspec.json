@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {}
+    "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {
+    "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+        "projectUniqueName": "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
         "projectName": "back_sistema_de_eventos",
-        "projectPath": "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+        "projectPath": "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
         "packagesPath": "C:\\Users\\Yass\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\obj\\",
+        "outputPath": "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages"

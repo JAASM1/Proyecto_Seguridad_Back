@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rcPXp7tfj5s=",
+  "dgSpecHash": "7b+qCDm9uTM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Yass\\Source\\Repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+  "projectFilePath": "C:\\Users\\Yass\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Yass\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Yass\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
