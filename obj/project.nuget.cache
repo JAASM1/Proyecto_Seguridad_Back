@@ -2,7 +2,7 @@
   "version": 2,
   "dgSpecHash": "z9Z7PFrk61c=",
   "success": true,
-  "projectFilePath": "C:\\Users\\nocol\\source\\repos\\Proyecto_Seguridad_Back\\back_sistema_de_eventos.csproj",
+  "projectFilePath": "C:\\Users\\alexd\\source\\repos\\back_sistema_de_eventos\\back_sistema_de_eventos\\back_sistema_de_eventos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alexd\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\alexd\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
