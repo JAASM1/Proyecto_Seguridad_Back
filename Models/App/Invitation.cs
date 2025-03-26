@@ -14,6 +14,7 @@
         public Event Event { get; set; }
         public int? IdGuest { get; set; }
         public User Guest { get; set; }
+        public string Email { get; set; } //propiedad para la lista de invitados
         public InvitationStatus Status { get; set; } = InvitationStatus.Pending;
         public string Token { get; set; } = string.Empty;
         public DateTime InvitedAt { get; set; } = DateTime.UtcNow;
