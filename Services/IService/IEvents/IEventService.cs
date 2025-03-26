@@ -1,4 +1,5 @@
 ﻿using back_sistema_de_eventos.Models.App;
+using back_sistema_de_eventos.Models.DTOs;
 
 namespace back_sistema_de_eventos.Services.IService.IEvents
 {
@@ -7,9 +8,10 @@ namespace back_sistema_de_eventos.Services.IService.IEvents
         Task<List<Event>> GetEventsByUser(int idUser);
         Task<Event> GetEventById(int idEvent);
         Task<Event> GetEventByToken(string Token);
-        Task<Event> CreateEvent(Event eventToCreate);
+        Task<List<Event>> GetEventByInvitation(int idUser);
+        Task<bool> CreateEvent(Event eventToCreate);
         Task<Event> UpdateEvent(Event eventToUpdate);
         Task<Event> DeleteEvent(int idEvent);
-
+        Task<bool> CreateInvitationEvent(InvitationDTO invitationdto);
     }
 }
