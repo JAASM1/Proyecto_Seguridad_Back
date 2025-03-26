@@ -1,6 +1,7 @@
 ﻿using back_sistema_de_eventos.Context;
 using back_sistema_de_eventos.Models.App;
 using back_sistema_de_eventos.Models.DTOs;
+using back_sistema_de_eventos.Services.IService.IUser;
 using back_sistema_de_eventos.Services.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ namespace back_sistema_de_eventos.Controllers.Auth
         private readonly JwtService _jwtService;
         private readonly ILogger<AuthController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthController(ApplicationDBContext dbContext, JwtService jwtService, ILogger<AuthController> logger, IConfiguration configuration)
+        public AuthController(ApplicationDBContext dbContext, JwtService jwtService, ILogger<AuthController> logger, IConfiguration configuration, IEmailService emailService)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
             _logger = logger;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("login")]
@@ -56,9 +59,7 @@ namespace back_sistema_de_eventos.Controllers.Auth
 
             return Ok(new
             {
-                accessToken,
                 refreshToken,
-                user = new { id = user.Id, name = user.Name, email = user.Email }
             });
         }
 
@@ -164,14 +165,52 @@ namespace back_sistema_de_eventos.Controllers.Auth
                 return NotFound(new { message = "Usuario no encontrado" });
             }
 
-            var token = _jwtService.GeneratePasswordResetToken(user);
-            var callbackUrl = Url.Action("ResetPassword", "Auth", new { token }, Request.Scheme);
+            var resetToken = Guid.NewGuid().ToString();
 
-            // Enviar correo con el enlace de restablecimiento de contraseña
-            // Aquí se simula el envío de correo
-            _logger.LogInformation($"Enlace de restablecimiento de contraseña: {callbackUrl}");
+            user.ResetToken = resetToken;
+            user.ResetTokenExpiryTime = DateTime.UtcNow.AddHours(1);
+
+            await _dbContext.SaveChangesAsync();
+
+            var resetLink = $"{_configuration["AppUrl"]}/reset-password?token={resetToken}&email={user.Email}";
+
+            if (user == null)
+            {
+                throw new Exception("Usuario no encontrado.");
+            }
+
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                throw new Exception("El usuario no tiene un email válido.");
+            }
+
+            await _emailService.SendEmailAsync(user.Email, "Restablecer contraseña",
+                $"<p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>" +
+                $"<a href='{resetLink}'>Restablecer contraseña</a>");
 
             return Ok(new { message = "Enlace de restablecimiento de contraseña enviado" });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u =>
+                u.Email == request.Email &&
+                u.ResetToken == request.Token &&
+                u.ResetTokenExpiryTime > DateTime.UtcNow);
+
+            if (user == null || user.RefreshTokenExpiryTime > DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Token inválido o expirado" });
+            }
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.ResetToken = null;
+            user.ResetTokenExpiryTime = null;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Contraseña restablecida exitosamente" });
         }
     }
 }

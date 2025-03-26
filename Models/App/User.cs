@@ -7,6 +7,8 @@
         public string Email { get; set; }
         public string Password { get; set; }
         public string? RefreshToken { get; set; }
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpiryTime { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public ICollection<Event> OrganizedEvents { get; set; } = new List<Event>();
         public ICollection<Invitation> Invitations { get; set; } = new List<Invitation>();

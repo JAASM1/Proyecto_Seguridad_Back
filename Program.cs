@@ -6,6 +6,7 @@ using back_sistema_de_eventos.Services.IService.IEvents;
 using back_sistema_de_eventos.Services.IService.IUser;
 using back_sistema_de_eventos.Services.Service;
 using back_sistema_de_eventos.Services.Service.EventS;
+using back_sistema_de_eventos.Services.Service.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -17,6 +18,7 @@ builder.Services.AddControllers();
 // Servicios
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
