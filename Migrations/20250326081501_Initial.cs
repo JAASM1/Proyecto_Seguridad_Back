@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace back_sistema_de_eventos.Migrations
 {
     /// <inheritdoc />
-    public partial class MigraciondeUsersEventsInvitations : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +18,10 @@ namespace back_sistema_de_eventos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,9 +37,9 @@ namespace back_sistema_de_eventos.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Hour = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    EventDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdOrganizer = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -48,7 +50,7 @@ namespace back_sistema_de_eventos.Migrations
                         column: x => x.IdOrganizer,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,8 +61,7 @@ namespace back_sistema_de_eventos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdEvent = table.Column<int>(type: "int", nullable: false),
                     IdUser = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InvitaAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    InvitedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,14 +70,12 @@ namespace back_sistema_de_eventos.Migrations
                         name: "FK_Invitations_Events_IdEvent",
                         column: x => x.IdEvent,
                         principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Invitations_Users_IdUser",
                         column: x => x.IdUser,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -85,21 +84,14 @@ namespace back_sistema_de_eventos.Migrations
                 column: "IdOrganizer");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invitations_IdEvent_IdUser",
+                name: "IX_Invitations_IdEvent",
                 table: "Invitations",
-                columns: new[] { "IdEvent", "IdUser" },
-                unique: true);
+                column: "IdEvent");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invitations_IdUser",
                 table: "Invitations",
                 column: "IdUser");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                table: "Users",
-                column: "Email",
-                unique: true);
         }
 
         /// <inheritdoc />
