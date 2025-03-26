@@ -85,6 +85,12 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             var result = await _eventService.DeleteEvent(idEvent);
             return Ok(result);
         }
-    }
 
+        [HttpPost("CreateInvitation")]
+        public async Task<ActionResult<bool>> CreateInvitation(InvitationDTO invitation)
+        {
+            bool response = await _eventService.CreateInvitationEvent(invitation);
+            return Ok(response);
+        }
+    }
 }

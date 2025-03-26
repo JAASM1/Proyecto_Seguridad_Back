@@ -1,5 +1,6 @@
 ﻿using back_sistema_de_eventos.Context;
 using back_sistema_de_eventos.Models.App;
+using back_sistema_de_eventos.Models.DTOs;
 using back_sistema_de_eventos.Services.IService.IEvents;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,29 +65,59 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
-        public async Task<Event> CreateEvent(Event eventToCreate)
+        public async Task<bool> CreateInvitationEvent(InvitationDTO invitationdto)
         {
             try
             {
-                var organizer = await _context.Users.FindAsync(eventToCreate.IdOrganizer);
-                if (organizer == null)
+                if (invitationdto.IdEvent== 0)
+                    return false;
+
+                Event @event = await _context.Events.SingleOrDefaultAsync(x => x.Id == invitationdto.IdEvent);
+                if (@event == null)
+                    return false;
+
+                if (invitationdto.IdUser <= 0)
+                    return false;
+
+                User user = await _context.Users.SingleOrDefaultAsync(x => x.Id == invitationdto.IdUser);
+                if (user == null)
+                    return false;
+
+                await _context.Invitations.AddAsync(new Invitation
                 {
-                    throw new Exception("Organized not found");
-                }
-                TimeZoneInfo gmt5Zone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-                DateTime eventDateTimeInGmt5 = TimeZoneInfo.ConvertTimeFromUtc(eventToCreate.EventDateTime, gmt5Zone);
-                Event newEvent = new Event()
+                    IdUser = invitationdto.IdUser,
+                    IdEvent = invitationdto.IdEvent,
+                    InvitedAt = DateTime.Now
+                });
+
+                var result = await _context.SaveChangesAsync();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la invitación.", ex);
+            }
+        }
+
+        public async Task<bool> CreateEvent(Event eventToCreate)
+        {
+            try
+            {
+                var organizer = await _context.Users.FindAsync(eventToCreate.IdOrganizer) ?? throw new Exception("Organized not found");
+                
+                Event newEvent = new()
                 {
                     Name = eventToCreate.Name,
                     Description = eventToCreate.Description,
                     Location = eventToCreate.Location,
-                    EventDateTime = eventDateTimeInGmt5,
+                    EventDateTime = eventToCreate.EventDateTime,
                     IdOrganizer = eventToCreate.IdOrganizer,
-                    Organizer = organizer
                 };
-                _context.Events.Add(newEvent);
-                await _context.SaveChangesAsync();
-                return newEvent;
+
+                await _context.Events.AddAsync(newEvent);
+                var result = await _context.SaveChangesAsync();
+                return result > 0;
             }
             catch (Exception ex)
             {
