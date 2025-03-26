@@ -65,6 +65,26 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
+        public async Task<List<Event>> GetEventByInvitation(int idUser)
+        {
+            try
+            {
+                var eventsFound = await _context.Invitations
+                    .Where(i => i.IdUser == idUser)
+                    .Join(_context.Events, i => i.IdEvent, e => e.Id, (i, e) => e)
+                    .ToListAsync();
+                if (eventsFound == null)
+                {
+                    throw new Exception("Events not found");
+                }
+                return eventsFound;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> CreateInvitationEvent(InvitationDTO invitationdto)
         {
             try
@@ -76,13 +96,16 @@ namespace back_sistema_de_eventos.Services.Service.EventS
                 if (@event == null)
                     return false;
 
+                if(@event.IdOrganizer ==invitationdto.IdUser)
+                    throw new Exception("No puedes invitarte a tu propio evento 😒");
+
                 if (invitationdto.IdUser <= 0)
                     return false;
 
                 User user = await _context.Users.SingleOrDefaultAsync(x => x.Id == invitationdto.IdUser);
                 if (user == null)
                     return false;
-
+                
                 await _context.Invitations.AddAsync(new Invitation
                 {
                     IdUser = invitationdto.IdUser,
