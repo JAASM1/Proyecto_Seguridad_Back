@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178
+VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "back_sistema_de_eventos", "back_sistema_de_eventos.csproj", "{5C50E8C3-367B-4D6F-ADCF-B4B779D53194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "back_sistema_de_eventos", "back_sistema_de_eventos.csproj", "{85CF4A15-9E47-437C-8202-7A0D86E1560A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5C50E8C3-367B-4D6F-ADCF-B4B779D53194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C50E8C3-367B-4D6F-ADCF-B4B779D53194}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C50E8C3-367B-4D6F-ADCF-B4B779D53194}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C50E8C3-367B-4D6F-ADCF-B4B779D53194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85CF4A15-9E47-437C-8202-7A0D86E1560A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85CF4A15-9E47-437C-8202-7A0D86E1560A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85CF4A15-9E47-437C-8202-7A0D86E1560A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85CF4A15-9E47-437C-8202-7A0D86E1560A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07C6A1BE-9561-407A-9684-1CE317651ED1}
 	EndGlobalSection
 EndGlobal

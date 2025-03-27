@@ -46,7 +46,7 @@ namespace back_sistema_de_eventos.Middleware
         public string Message { get; set; }
         public string Details { get; set; }
 
-        public ApiException(int statusCode, string message, string details = null)
+        public ApiException(int statusCode, string message, string? details = null)
         {
             StatusCode = statusCode;
             Message = message;

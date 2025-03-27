@@ -102,7 +102,7 @@ namespace back_sistema_de_eventos.Services.Service.EventS
                 if (invitationdto.IdUser <= 0)
                     return false;
 
-                User user = await _context.Users.SingleOrDefaultAsync(x => x.Id == invitationdto.IdUser);
+                Models.App.User user = await _context.Users.SingleOrDefaultAsync(x => x.Id == invitationdto.IdUser);
                 if (user == null)
                     return false;
                 

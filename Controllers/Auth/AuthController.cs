@@ -1,6 +1,7 @@
 ﻿using back_sistema_de_eventos.Context;
 using back_sistema_de_eventos.Models.App;
 using back_sistema_de_eventos.Models.DTOs;
+using back_sistema_de_eventos.Services.IService.IUser;
 using back_sistema_de_eventos.Services.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ namespace back_sistema_de_eventos.Controllers.Auth
         private readonly JwtService _jwtService;
         private readonly ILogger<AuthController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthController(ApplicationDBContext dbContext, JwtService jwtService, ILogger<AuthController> logger, IConfiguration configuration)
+        public AuthController(ApplicationDBContext dbContext, JwtService jwtService, ILogger<AuthController> logger, IConfiguration configuration, IEmailService emailService)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
             _logger = logger;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("login")]
@@ -150,6 +153,65 @@ namespace back_sistema_de_eventos.Controllers.Auth
             await _dbContext.SaveChangesAsync();
 
             return Ok(new { message = "Sesión cerrada exitosamente" });
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO request)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+
+            var resetToken = Guid.NewGuid().ToString();
+
+            user.ResetToken = resetToken;
+            user.ResetTokenExpiryTime = DateTime.UtcNow.AddHours(1);
+
+            await _dbContext.SaveChangesAsync();
+
+            if (user == null)
+            {
+                throw new Exception("Usuario no encontrado.");
+            }
+
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                throw new Exception("El usuario no tiene un email válido.");
+            }
+
+            await _emailService.SendEmailAsync(user.Email, "Restablecer contraseña",
+                $"<p>Para restablecer tu contraseña, debes de ingresar tu correo, el token de acceso y la nueva contraseña:</p>" +
+                $"<p>Correo</p>" +
+                $"<p>{user.Email}</p>"+
+                $"<p>Token de acceso</p>" +
+                $"<p>{resetToken}</p>");
+
+            return Ok(new { message = "Enlace de restablecimiento de contraseña enviado" });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u =>
+                u.Email == request.Email &&
+                u.ResetToken == request.Token &&
+                u.ResetTokenExpiryTime > DateTime.UtcNow);
+
+            if (user == null || user.RefreshTokenExpiryTime > DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Token inválido o expirado" });
+            }
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.ResetToken = null;
+            user.ResetTokenExpiryTime = null;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Contraseña restablecida exitosamente" });
         }
     }
 }
