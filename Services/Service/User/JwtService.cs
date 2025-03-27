@@ -15,7 +15,7 @@ namespace back_sistema_de_eventos.Services.Service
             _config = config;
         }
 
-        public string GenerateAccessToken(User user)
+        public string GenerateAccessToken(Models.App.User user)
         {
             var claims = new List<Claim>
             {
@@ -41,7 +41,7 @@ namespace back_sistema_de_eventos.Services.Service
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken(User user)
+        public string GenerateRefreshToken(Models.App.User user)
         {
             var claims = new List<Claim>
             {
@@ -93,5 +93,6 @@ namespace back_sistema_de_eventos.Services.Service
 
             return principal;
         }
+
     }
 }

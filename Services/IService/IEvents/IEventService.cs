@@ -8,6 +8,7 @@ namespace back_sistema_de_eventos.Services.IService.IEvents
         Task<List<Event>> GetEventsByUser(int idUser);
         Task<Event> GetEventById(int idEvent);
         Task<Event> GetEventByToken(string Token);
+        Task<List<Event>> GetEventByInvitation(int idUser);
         Task<bool> CreateEvent(Event eventToCreate);
         Task<Event> UpdateEvent(Event eventToUpdate);
         Task<Event> DeleteEvent(int idEvent);

@@ -16,7 +16,7 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         {
             _eventService = eventService;
         }
-
+         
         // GET: EventController/GetEventByUser/5
         [HttpGet("GetEventsByUser/{idUser}")]
         public async Task<ActionResult> GetEventByUser(int idUser)
@@ -41,6 +41,14 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             return Ok(result);
         }
 
+        // GET : EventController/GetEventByInvitation/5
+        [HttpGet("GetEventByInvitation/{idUser}")]
+        public async Task<ActionResult> GetEventByInvitation(int idUser)
+        {
+            var result = await _eventService.GetEventByInvitation(idUser);
+            return Ok(result);
+        }
+
         // POST: EventController/Create
         [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] EventDTO eventDTO)
@@ -56,6 +64,14 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             };
             var result = await _eventService.CreateEvent(eventToCreate);
             return Ok(result);
+        }
+
+        // POST: EventController/CreateInvitation
+        [HttpPost("CreateInvitation")]
+        public async Task<ActionResult<bool>> CreateInvitation(InvitationDTO invitation)
+        {
+            bool response = await _eventService.CreateInvitationEvent(invitation);
+            return Ok(response);
         }
 
         // PUT: EventController/Update/5
@@ -82,13 +98,6 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         {
             var result = await _eventService.DeleteEvent(idEvent);
             return Ok(result);
-        }
-
-        [HttpPost("CreateInvitation")]
-        public async Task<ActionResult<bool>> CreateInvitation(InvitationDTO invitation)
-        {
-            bool response = await _eventService.CreateInvitationEvent(invitation);
-            return Ok(response);
         }
     }
 }
