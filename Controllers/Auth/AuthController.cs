@@ -172,8 +172,6 @@ namespace back_sistema_de_eventos.Controllers.Auth
 
             await _dbContext.SaveChangesAsync();
 
-            var resetLink = $"{_configuration["AppUrl"]}/reset-password?token={resetToken}&email={user.Email}";
-
             if (user == null)
             {
                 throw new Exception("Usuario no encontrado.");
@@ -185,8 +183,11 @@ namespace back_sistema_de_eventos.Controllers.Auth
             }
 
             await _emailService.SendEmailAsync(user.Email, "Restablecer contraseña",
-                $"<p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>" +
-                $"<a href='{resetLink}'>Restablecer contraseña</a>");
+                $"<p>Para restablecer tu contraseña, debes de ingresar tu correo, el token de acceso y la nueva contraseña:</p>" +
+                $"<p>Correo</p>" +
+                $"<p>{user.Email}</p>"+
+                $"<p>Token de acceso</p>" +
+                $"<p>{resetToken}</p>");
 
             return Ok(new { message = "Enlace de restablecimiento de contraseña enviado" });
         }

@@ -10,6 +10,8 @@ using back_sistema_de_eventos.Services.Service.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Agregar servicios
