@@ -12,8 +12,8 @@ using back_sistema_de_eventos.Context;
 namespace back_sistema_de_eventos.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250313005746_AjusteModeloEvento")]
-    partial class AjusteModeloEvento
+    [Migration("20250326043303_RecoveryPassword")]
+    partial class RecoveryPassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,9 +37,8 @@ namespace back_sistema_de_eventos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EventDateTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("EventDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdOrganizer")
                         .HasColumnType("int");
@@ -151,6 +150,18 @@ namespace back_sistema_de_eventos.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

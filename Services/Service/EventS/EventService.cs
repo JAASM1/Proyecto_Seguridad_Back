@@ -1,5 +1,6 @@
 ﻿using back_sistema_de_eventos.Context;
 using back_sistema_de_eventos.Models.App;
+using back_sistema_de_eventos.Models.DTOs;
 using back_sistema_de_eventos.Services.IService.IEvents;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,29 +48,122 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
-        public async Task<Event> CreateEvent(Event eventToCreate)
+        public async Task<Event> GetEventByToken(string Token)
         {
             try
             {
-                var organizer = await _context.Users.FindAsync(eventToCreate.IdOrganizer);
-                if (organizer == null)
+                var eventFound = await _context.Events.Where(x => x.Token == Token).FirstOrDefaultAsync();
+                if (eventFound == null)
                 {
-                    throw new Exception("Organized not found");
+                    throw new Exception("Event not found");
                 }
-                TimeZoneInfo gmt5Zone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-                DateTime eventDateTimeInGmt5 = TimeZoneInfo.ConvertTimeFromUtc(eventToCreate.EventDateTime, gmt5Zone);
-                Event newEvent = new Event()
+                return eventFound;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Event>> GetEventByInvitation(int idUser)
+        {
+            try
+            {
+                var eventsFound = await _context.Invitations
+                    .Where(i => i.IdUser == idUser)
+                    .Join(_context.Events, i => i.IdEvent, e => e.Id, (i, e) => e)
+                    .ToListAsync();
+                if (eventsFound == null)
+                {
+                    throw new Exception("Events not found");
+                }
+                return eventsFound;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Models.App.User>> GetInvitedUsersByEvent(int idEvent)
+        {
+            try
+            {
+                var invitedUsers = await _context.Invitations
+                    .Where(i => i.IdEvent == idEvent)
+                    .Join(_context.Users, i => i.IdUser, u => u.Id, (i, u) => u)
+                    .ToListAsync();
+
+                if (!invitedUsers.Any())
+                {
+                    throw new Exception("No invited users found for this event.");
+                }
+
+                return invitedUsers;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> CreateInvitationEvent(InvitationDTO invitationdto)
+        {
+            try
+            {
+                if (invitationdto.IdEvent== 0)
+                    return false;
+
+                Event @event = await _context.Events.SingleOrDefaultAsync(x => x.Id == invitationdto.IdEvent);
+                if (@event == null)
+                    return false;
+
+                if(@event.IdOrganizer ==invitationdto.IdUser)
+                    throw new Exception("No puedes invitarte a tu propio evento 😒");
+
+                if (invitationdto.IdUser <= 0)
+                    return false;
+
+                Models.App.User user = await _context.Users.SingleOrDefaultAsync(x => x.Id == invitationdto.IdUser);
+                if (user == null)
+                    return false;
+                
+                await _context.Invitations.AddAsync(new Invitation
+                {
+                    IdUser = invitationdto.IdUser,
+                    IdEvent = invitationdto.IdEvent,
+                    InvitedAt = DateTime.Now
+                });
+
+                var result = await _context.SaveChangesAsync();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la invitación.", ex);
+            }
+        }
+
+        public async Task<bool> CreateEvent(Event eventToCreate)
+        {
+            try
+            {
+                var organizer = await _context.Users.FindAsync(eventToCreate.IdOrganizer) ?? throw new Exception("Organized not found");
+                
+                Event newEvent = new()
                 {
                     Name = eventToCreate.Name,
                     Description = eventToCreate.Description,
                     Location = eventToCreate.Location,
-                    EventDateTime = eventDateTimeInGmt5,
+                    EventDateTime = eventToCreate.EventDateTime,
                     IdOrganizer = eventToCreate.IdOrganizer,
-                    Organizer = organizer
                 };
-                _context.Events.Add(newEvent);
-                await _context.SaveChangesAsync();
-                return newEvent;
+
+                await _context.Events.AddAsync(newEvent);
+                var result = await _context.SaveChangesAsync();
+                return result > 0;
             }
             catch (Exception ex)
             {
