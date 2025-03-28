@@ -1,6 +1,7 @@
 ﻿using back_sistema_de_eventos.Models.App;
 using back_sistema_de_eventos.Models.DTOs;
 using back_sistema_de_eventos.Services.IService.IEvents;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         {
             _eventService = eventService;
         }
-
+         
         // GET: EventController/GetEventByUser/5
         [HttpGet("GetEventsByUser/{idUser}")]
         public async Task<ActionResult> GetEventByUser(int idUser)
@@ -29,6 +30,30 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
         public async Task<ActionResult> GetEventById(int idEvent)
         {
             var result = await _eventService.GetEventById(idEvent);
+            return Ok(result);
+        }
+
+        // GET: EventController/GetEventById/44f45hb7-g798-4de9-ccc7-75ca1a150342
+        [HttpGet("GetEventByToken/{Token}")]
+        public async Task<ActionResult> GetEventByToken(string Token)
+        {
+            var result = await _eventService.GetEventByToken(Token);
+            return Ok(result);
+        }
+
+        // GET : EventController/GetEventByInvitation/5
+        [HttpGet("GetEventByInvitation/{idUser}")]
+        public async Task<ActionResult> GetEventByInvitation(int idUser)
+        {
+            var result = await _eventService.GetEventByInvitation(idUser);
+            return Ok(result);
+        }
+
+        // GET: EventController/GetInvitedUsersByEvent/5
+        [HttpGet("GetInvitedUsersByEvent/{idEvent}")]
+        public async Task<ActionResult> GetInvitedUsersByEvent(int idEvent)
+        {
+            var result = await _eventService.GetInvitedUsersByEvent(idEvent);
             return Ok(result);
         }
 
@@ -47,6 +72,14 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             };
             var result = await _eventService.CreateEvent(eventToCreate);
             return Ok(result);
+        }
+
+        // POST: EventController/CreateInvitation
+        [HttpPost("CreateInvitation")]
+        public async Task<ActionResult<bool>> CreateInvitation(InvitationDTO invitation)
+        {
+            bool response = await _eventService.CreateInvitationEvent(invitation);
+            return Ok(response);
         }
 
         // PUT: EventController/Update/5
@@ -75,5 +108,4 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             return Ok(result);
         }
     }
-
 }

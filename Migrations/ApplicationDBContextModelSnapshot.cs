@@ -26,7 +26,8 @@ namespace back_sistema_de_eventos.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -34,9 +35,8 @@ namespace back_sistema_de_eventos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EventDateTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("EventDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdOrganizer")
                         .HasColumnType("int");
@@ -54,77 +54,38 @@ namespace back_sistema_de_eventos.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdOrganizer");
 
-                    b.HasIndex("Token")
-                        .IsUnique();
-
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("back_sistema_de_eventos.Models.App.GuestRegistration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdInvitation")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("RegisteredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdInvitation")
-                        .IsUnique();
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("GuestRegistrations");
                 });
 
             modelBuilder.Entity("back_sistema_de_eventos.Models.App.Invitation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("IdEvent")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdGuest")
+                    b.Property<int>("IdUser")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("InvitedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdEvent");
 
-                    b.HasIndex("IdGuest");
+                    b.HasIndex("IdUser");
 
                     b.ToTable("Invitations");
                 });
@@ -133,7 +94,8 @@ namespace back_sistema_de_eventos.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -149,6 +111,18 @@ namespace back_sistema_de_eventos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -156,30 +130,11 @@ namespace back_sistema_de_eventos.Migrations
 
             modelBuilder.Entity("back_sistema_de_eventos.Models.App.Event", b =>
                 {
-                    b.HasOne("back_sistema_de_eventos.Models.App.User", "Organizer")
-                        .WithMany("OrganizedEvents")
+                    b.HasOne("back_sistema_de_eventos.Models.App.User", "User")
+                        .WithMany()
                         .HasForeignKey("IdOrganizer")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Organizer");
-                });
-
-            modelBuilder.Entity("back_sistema_de_eventos.Models.App.GuestRegistration", b =>
-                {
-                    b.HasOne("back_sistema_de_eventos.Models.App.Invitation", "Invitation")
-                        .WithOne("GuestRegistration")
-                        .HasForeignKey("back_sistema_de_eventos.Models.App.GuestRegistration", "IdInvitation")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("back_sistema_de_eventos.Models.App.User", "User")
-                        .WithMany("GuestRegistrations")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Invitation");
 
                     b.Navigation("User");
                 });
@@ -192,14 +147,15 @@ namespace back_sistema_de_eventos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("back_sistema_de_eventos.Models.App.User", "Guest")
+                    b.HasOne("back_sistema_de_eventos.Models.App.User", "User")
                         .WithMany("Invitations")
-                        .HasForeignKey("IdGuest")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Event");
 
-                    b.Navigation("Guest");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("back_sistema_de_eventos.Models.App.Event", b =>
@@ -207,19 +163,9 @@ namespace back_sistema_de_eventos.Migrations
                     b.Navigation("Invitations");
                 });
 
-            modelBuilder.Entity("back_sistema_de_eventos.Models.App.Invitation", b =>
-                {
-                    b.Navigation("GuestRegistration")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("back_sistema_de_eventos.Models.App.User", b =>
                 {
-                    b.Navigation("GuestRegistrations");
-
                     b.Navigation("Invitations");
-
-                    b.Navigation("OrganizedEvents");
                 });
 #pragma warning restore 612, 618
         }
