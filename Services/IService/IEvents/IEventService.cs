@@ -12,6 +12,7 @@ namespace back_sistema_de_eventos.Services.IService.IEvents
         Task<bool> CreateEvent(Event eventToCreate);
         Task<Event> UpdateEvent(Event eventToUpdate);
         Task<Event> DeleteEvent(int idEvent);
+        Task<List<User>> GetInvitedUsersByEvent(int idEvent);
         Task<bool> CreateInvitationEvent(InvitationDTO invitationdto);
     }
 }

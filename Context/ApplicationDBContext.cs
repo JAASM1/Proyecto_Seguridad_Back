@@ -18,7 +18,7 @@ namespace back_sistema_de_eventos.Context
            .HasOne(i => i.Event)
            .WithMany(e => e.Invitations)
            .HasForeignKey(i => i.IdEvent)
-           .OnDelete(DeleteBehavior.NoAction);
+           .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Invitation>()
                 .HasOne(i => i.User)
