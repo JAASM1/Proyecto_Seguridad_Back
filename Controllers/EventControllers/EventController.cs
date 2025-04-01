@@ -49,6 +49,14 @@ namespace back_sistema_de_eventos.Controllers.EventControllers
             return Ok(result);
         }
 
+        // GET: EventController/GetInvitedUsersByEvent/5
+        [HttpGet("GetInvitedUsersByEvent/{idEvent}")]
+        public async Task<ActionResult> GetInvitedUsersByEvent(int idEvent)
+        {
+            var result = await _eventService.GetInvitedUsersByEvent(idEvent);
+            return Ok(result);
+        }
+
         // POST: EventController/Create
         [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] EventDTO eventDTO)

@@ -85,6 +85,29 @@ namespace back_sistema_de_eventos.Services.Service.EventS
             }
         }
 
+        public async Task<List<Models.App.User>> GetInvitedUsersByEvent(int idEvent)
+        {
+            try
+            {
+                var invitedUsers = await _context.Invitations
+                    .Where(i => i.IdEvent == idEvent)
+                    .Join(_context.Users, i => i.IdUser, u => u.Id, (i, u) => u)
+                    .ToListAsync();
+
+                if (!invitedUsers.Any())
+                {
+                    throw new Exception("No invited users found for this event.");
+                }
+
+                return invitedUsers;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public async Task<bool> CreateInvitationEvent(InvitationDTO invitationdto)
         {
             try
